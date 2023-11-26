@@ -1,8 +1,10 @@
 name: CD
 on:
-  push:
-    tags:
-    - '*'
+  - push
+  - pull_request
+  # push:
+    # tags:
+    # - '*'
 
 jobs:
 
@@ -15,11 +17,11 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: 3.12
 
       - name: Set up QEMU
         if: ${{ matrix.os == 'ubuntu-latest' }}
@@ -102,22 +104,22 @@ jobs:
   #        user: ${{ secrets.PYPI_USERNAME }}
   #        password: ${{ secrets.PYPI_PASSWORD }}
 
-  release:
-    name: Create GitHub release
-    needs:
-      - build_wheels
-      - build_sdist
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-      - name: Make zip of artifacts
-        run: |
-          zip -0 artifacts.zip wheels/*.whl dist/*.tar.gz
-      - name: Release on GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            wheels/*.whl
-            dist/*.tar.gz
-            artifacts.zip
+  # release:
+  #   name: Create GitHub release
+  #   needs:
+  #     - build_wheels
+  #     - build_sdist
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v3
+  #     - name: Make zip of artifacts
+  #       run: |
+  #         zip -0 artifacts.zip wheels/*.whl dist/*.tar.gz
+  #     - name: Release on GitHub
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         files: |
+  #           wheels/*.whl
+  #           dist/*.tar.gz
+  #           artifacts.zip
